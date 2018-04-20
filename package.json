@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/saveryanov/worldmap-generator/issues"
   },
-  "homepage": "https://github.com/saveryanov/worldmap-generator#readme"
+  "homepage": "https://github.com/saveryanov/worldmap-generator#readme",
+  "dependencies": {
+    "init-array": "^1.0.2"
+  }
 }
