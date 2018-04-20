@@ -3,18 +3,19 @@ var controllers = require('../controllers'),
 
 const TYPE_UNRESOLVED = controllers.constants.typeUnresolved;
 var TileType = controllers.TileType;
+var validators = controllers.helper.validators;
 
 class WorldmapGenerator {
     constructor({
         size = {},
         tileTypes = []
     } = {}) {
-        // init params
+        // init size params
         this.size = {};
-        this.size.width = size.width ? size.width : 10;
-        this.size.depth = size.depth ? size.depth : 10;
-        this.size.height = size.height ? size.height : 1;
-        
+        this.size.width = validators.isValidDimension(size.width) ? size.width : 10;
+        this.size.depth = validators.isValidDimension(size.depth) ? size.depth : 10;
+        this.size.height = validators.isValidDimension(size.height) > 0 ? size.height : 1;   // just one layer
+
         // init tile types
         this.tileTypes = {};
         this.tileTypes[TYPE_UNRESOLVED] = new TileType();

@@ -1,16 +1,17 @@
 var controllers = require('../controllers');
 
 const TYPE_UNRESOLVED = controllers.constants.typeUnresolved;
+var validators = controllers.helper.validators;
 
 class TileType {
     constructor({
         name,
         connections = {}
     } = {}) {
-        if (name == TYPE_UNRESOLVED) {
-            throw new Error(`Can't create tile type: "${TYPE_UNRESOLVED}" is a reserved name of tile type`);
+        if (!validators.isValidTileName(name)) {
+            throw new Error(`Can't create tile type: "${name}" is a reserved name of tile type`);
         }
-
+        
         this.name = name ? name : TYPE_UNRESOLVED;
         this.connections = {};
         this.connections.top = connections.top ? connections.top : [];
