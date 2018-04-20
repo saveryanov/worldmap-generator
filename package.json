@@ -1,0 +1,26 @@
+{
+  "name": "worldmap-generator",
+  "version": "0.0.1",
+  "description": "worldmap generator (pre pre pre alpha)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saveryanov/worldmap-generator.git"
+  },
+  "keywords": [
+    "world",
+    "map",
+    "game",
+    "generator",
+    "random"
+  ],
+  "author": "Sergey Averyanov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saveryanov/worldmap-generator/issues"
+  },
+  "homepage": "https://github.com/saveryanov/worldmap-generator#readme"
+}
