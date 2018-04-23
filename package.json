@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/saveryanov/worldmap-generator#readme",
   "dependencies": {
-    "init-array": "^1.0.2"
+    "co": "^4.6.0",
+    "init-array": "^1.0.2",
+    "jimp": "^0.2.28"
   }
 }

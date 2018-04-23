@@ -16,14 +16,21 @@ module.exports.validators = {
     }
 }
 
-module.exports.invertSide = function(sideName) {
-    switch(sideName) {
-        case 'top': return 'bottom';
-        case 'bottom': return 'top';
-        case 'left': return 'right'; 
-        case 'right': return 'left';
-        case 'up': return 'down';
-        case 'down': return 'up';
-        default: throw new Error(`Unsupported side ${sideName} for tile connection`);
+module.exports.invertSide = function (sideName) {
+    switch (sideName) {
+        case 'top':
+            return 'bottom';
+        case 'bottom':
+            return 'top';
+        case 'left':
+            return 'right';
+        case 'right':
+            return 'left';
+        case 'up':
+            return 'down';
+        case 'down':
+            return 'up';
+        default:
+            throw new Error(`Unsupported side ${sideName} for tile connection`);
     }
 }
