@@ -1,25 +1,29 @@
 var controllers = require('../controllers');
 
-const TYPE_UNRESOLVED = controllers.constants.typeUnresolved;
+const SIDES = ['top', 'bottom', 'left', 'right', 'up', 'down'];
 var validators = controllers.helper.validators;
+
 
 class TileType {
     constructor({
         name,
+        frequency = 1,
         connections = {}
-    } = {}) {
+    } = {}) {  
         if (!validators.isValidTileName(name)) {
+            throw new Error(`Can't create tile type: "${name}" is not valid name of tile type`);
+        } 
+        if (!validators.isReservedTileName(name)) {
             throw new Error(`Can't create tile type: "${name}" is a reserved name of tile type`);
         }
-        
-        this.name = name ? name : TYPE_UNRESOLVED;
-        this.connections = {};
-        this.connections.top = connections.top ? connections.top : [];
-        this.connections.bottom = connections.bottom ? connections.bottom : [];
-        this.connections.up = connections.up ? connections.up : [];
-        this.connections.down = connections.down ? connections.down : [];
-        this.connections.left = connections.left ? connections.left : [];
-        this.connections.rigth = connections.rigth ? connections.rigth : [];
+
+        this.name = name;  // name of tile type
+        this.frequency = typeof frequency == 'number' ? frequency : 1;
+
+        this.connections = {}; // init connections
+        for (let sideName of SIDES) {   // for each side
+            this.connections[sideName] = connections[sideName] ? connections[sideName] : {};
+        }
     }
 }
 

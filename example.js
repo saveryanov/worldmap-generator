@@ -9,18 +9,33 @@ var world = new WorldmapGenerator({
     tileTypes: [
         {
             name: 'grass',
+            frequency: 1,
             connections: {
-                top: 1,
-                bottom: 1,
-                up: 1,
-                down: 1,
-                left: 1,
-                rigth: 1
+                top: {'grass': 2, 'water': 1},
+                bottom: {'grass': 2, 'water': 1},
+                up: {'grass': 2, 'water': 1},
+                down: {'grass': 2, 'water': 1},
+                left: {'grass': 2, 'water': 1},
+                right: {'grass': 2, 'water': 1}
+            }
+        },
+        {
+            name: 'water',
+            frequency: 1,
+            connections: {
+                top: {'grass': 1, 'water': 2},
+                bottom: {'grass': 1, 'water': 2},
+                up: {'grass': 1, 'water': 2},
+                down: {'grass': 1, 'water': 2},
+                left: {'grass': 1, 'water': 2},
+                right: {'grass': 1, 'water': 2}
             }
         }
     ]
 });
 
-console.log(world);
-console.log(world.map);
-console.log(world.tileTypes);
+console.log(world.tileTypes.grass);
+console.log(world.tileTypes.water);
+
+world.generate();
+console.log(world.map[0]);
