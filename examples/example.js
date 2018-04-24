@@ -46,20 +46,20 @@ co(function* () {
                 name: 'mountain',
                 frequency: 1,
                 connections: {
-                    up:     {'grass': 1, 'mountain': 100},
-                    down:   {'grass': 1, 'mountain': 100},
-                    left:   {'grass': 1, 'mountain': 100},
-                    right:  {'grass': 1, 'mountain': 100}
+                    up:     {'grass': 1, 'mountain': 150},
+                    down:   {'grass': 1, 'mountain': 150},
+                    left:   {'grass': 1, 'mountain': 150},
+                    right:  {'grass': 1, 'mountain': 150}
                 }
             },
             {
                 name: 'icepeak',
                 frequency: 1,
                 connections: {
-                    up:     {'icepeak': 25, 'mountain': 10},
-                    down:   {'icepeak': 25, 'mountain': 10},
-                    left:   {'icepeak': 25, 'mountain': 10},
-                    right:  {'icepeak': 25, 'mountain': 10}
+                    up:     {'icepeak': 15, 'mountain': 5},
+                    down:   {'icepeak': 15, 'mountain': 5},
+                    left:   {'icepeak': 15, 'mountain': 5},
+                    right:  {'icepeak': 15, 'mountain': 5}
                 }
             },
             {
