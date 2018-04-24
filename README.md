@@ -4,7 +4,7 @@
 
 Procedural worldmap generator.
 
-![alt example](https://github.com/saveryanov/worldmap-generator/blob/master/examples/result.png?raw=true)
+![alt example](https://github.com/saveryanov/worldmap-generator/blob/master/examples/result2d.png?raw=true)
 
 ## Install
 
@@ -14,7 +14,7 @@ npm install --save worldmap-generator
 
 ## Usage
 
-You can find usage example at /examples/example.js.
+You can find usage example at /examples/example2d.js. 3D generator in progress.
 
 Simple usage is:
 

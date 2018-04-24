@@ -104,6 +104,11 @@ WorldmapGenerator.prototype.getRandomTileTypeName = function (frequencies = {}) 
     for (let tileTypeName in frequencies) {
         normalizationCoef += frequencies[tileTypeName];
     }
+    if (normalizationCoef <= 0) {
+        normalizationCoef = 1;
+        //return null;
+    }
+
     var randomBaseVal = Math.random();
 
     var currentProbabillity = 0;
@@ -119,7 +124,11 @@ WorldmapGenerator.prototype.getRandomTileTypeName = function (frequencies = {}) 
 
 WorldmapGenerator.prototype.getRandomTileType = function (frequencies) {
     let randomTileName = this.getRandomTileTypeName(frequencies);
-    return this.tileTypes[randomTileName];
+    if (randomTileName && this.tileTypes[randomTileName]) {
+        return this.tileTypes[randomTileName];
+    } else {
+        return null;
+    }
 }
 
 
@@ -127,7 +136,6 @@ WorldmapGenerator.prototype.getCellRaw = function (z, x, y) {
     if (this.map[z] && this.map[z][x] && this.map[z][x][y]) {
         return this.map[z][x][y];
     }
-
     return null;
 }
 
@@ -139,7 +147,12 @@ WorldmapGenerator.prototype.getCell = function (z, x, y) {
                 cell.frequencies = {};
                 for (let tileTypeName in this.tileTypes) {
                     let tileType = this.tileTypes[tileTypeName];
-                    cell.frequencies[tileTypeName] = tileType.frequency;
+                    let frequency = tileType.frequency;
+                    // check limits
+                    if (!tileType.isInLimits(z, x, y)) {
+                        frequency = 0;
+                    }
+                    cell.frequencies[tileTypeName] = frequency;
                 }
             }
         }
@@ -154,13 +167,21 @@ WorldmapGenerator.prototype.updateSurroundFrequencies = function (z, x, y) {
         if (tileTypeSideConnections) {
             for (let connectionName in tileTypeSideConnections) {
                 let frequency = tileTypeSideConnections[connectionName];
+
+                // check limits
+                if (!self.tileTypes[connectionName].isInLimits(z, x, y)) {
+                    frequency = 0;
+                }
+
                 let cell = self.getCellRaw(z + offset_z, x + offset_x, y + offset_y);
                 if (cell && !cell.resolved) {
                     if (!cell.frequencies) {
                         cell.frequencies = {};
                     }
-                    if (cell.frequencies[connectionName] !== 0) {
-                        if (cell.frequencies[connectionName] === undefined || frequency === 0) {
+                    if (frequency === 0) {
+                        cell.frequencies[connectionName] = frequency;
+                    } else if (cell.frequencies[connectionName] !== 0) {
+                        if (cell.frequencies[connectionName] === undefined) {
                             cell.frequencies[connectionName] = frequency;
                         } else {
                             cell.frequencies[connectionName] += frequency;
@@ -181,26 +202,22 @@ WorldmapGenerator.prototype.updateSurroundFrequencies = function (z, x, y) {
         updateFrequencies(0, 1, 0, tileType.connections.right);
         updateFrequencies(0, 0, -1, tileType.connections.up);
         updateFrequencies(0, 0, 1, tileType.connections.down);
-        /* to add this need to define diagonal connections
-        updateFrequencies(0, 1, -1, tileType.connections.up_left);
-        updateFrequencies(0, -1, -1, tileType.connections.up_right);
-        updateFrequencies(0, 1, 1, tileType.connections.down_left);
-        updateFrequencies(0, -1, 1, tileType.connections.down_right); 
-        */
     }
 }
 
 
 WorldmapGenerator.prototype.resolveMapCell = function (z, x, y, name) {
     this.map[z][x][y].resolve(name);
+    this.unresolvedCount--;
     this.updateSurroundFrequencies(z, x, y);
 }
 
 WorldmapGenerator.prototype.generate = function () {
     var self = this;
-    function getUnresolvedCoords() {
+
+    function getUnresolvedCoords(z) {
         var coords = [];
-        for (let z = 0; z < self.size.height; z++) {
+        //for (let z = 0; z < self.size.height; z++) {
             for (let x = 0; x < self.size.width; x++) {
                 for (let y = 0; y < self.size.depth; y++) {
                     let cell = self.getCell(z, x, y);
@@ -209,12 +226,37 @@ WorldmapGenerator.prototype.generate = function () {
                     }
                 }
             }
-        }
+        //}
         return coords;
     }
 
+
     // recursively creates map
-    function processCell({z, x, y, callStackLeft = 100} = {}) {
+    function clearCells({z, x, y, callStackLeft = 5} = {}) {
+        if (callStackLeft < 0) {
+            return;
+        }
+        
+        let cell = self.getCellRaw(z, x, y);
+        if (!cell) {
+            return;
+        }
+        cell.clear();
+        this.updateSurroundFrequencies(z, x, y);
+        self.unresolvedCount++;
+
+        controllers.helper.shuffle([
+            {z: z + 1, x: x, y: y, callStackLeft: callStackLeft -1}, // top
+            {z: z - 1, x: x, y: y, callStackLeft: callStackLeft - 1}, // bottom
+            {z: z, x: x - 1, y: y, callStackLeft: callStackLeft - 1}, // left
+            {z: z, x: x + 1, y: y, callStackLeft: callStackLeft - 1}, // right
+            {z: z, x: x, y: y - 1, callStackLeft: callStackLeft - 1}, // up
+            {z: z, x: x, y: y + 1, callStackLeft: callStackLeft - 1}, // down
+        ]).map(clearCells);
+    }
+
+    // recursively creates map
+    function processCell({z, x, y, callStackLeft = 200} = {}) {
         if (self.unresolvedCount <= 0) {
             return;
         }
@@ -227,11 +269,14 @@ WorldmapGenerator.prototype.generate = function () {
         if (!cell || cell.resolved) {
             return;
         }
-
+        
         let currentTileType = self.getRandomTileType(cell.frequencies);
+        if (currentTileType == null) {  // if unresolvable cell
+            clearCells(z, x, y);    // fall back
+            return;
+        }
         self.resolveMapCell(z, x, y, currentTileType.name);
-        self.unresolvedCount--;
-
+        
         controllers.helper.shuffle([
             {z: z + 1, x: x, y: y, callStackLeft: callStackLeft -1}, // top
             {z: z - 1, x: x, y: y, callStackLeft: callStackLeft - 1}, // bottom
@@ -239,19 +284,17 @@ WorldmapGenerator.prototype.generate = function () {
             {z: z, x: x + 1, y: y, callStackLeft: callStackLeft - 1}, // right
             {z: z, x: x, y: y - 1, callStackLeft: callStackLeft - 1}, // up
             {z: z, x: x, y: y + 1, callStackLeft: callStackLeft - 1}, // down
-            /* to add this need to define diagonal connections
-            {z: z, x: x - 1, y: y - 1, callStackLeft: callStackLeft - 1}, // up-left
-            {z: z, x: x + 1, y: y - 1, callStackLeft: callStackLeft - 1}, // up-right
-            {z: z, x: x - 1, y: y + 1, callStackLeft: callStackLeft - 1}, // down-left
-            {z: z, x: x + 1, y: y + 1, callStackLeft: callStackLeft - 1}, // down-right
-            */
         ]).map(processCell);
 
     }
 
-    while (self.unresolvedCount > 0) {
-        let coords = getUnresolvedCoords();
-        processCell(coords[Math.floor(Math.random() * coords.length)]);
+    for (let z = 0; z < self.size.height; z++) {
+        let coords = getUnresolvedCoords(z);
+        while (coords.length) {
+            coords = getUnresolvedCoords(z);
+            //console.log(`${self.unresolvedCount} tiles left.`);
+            processCell(coords[Math.floor(Math.random() * coords.length)]);
+        }
     }
 }
 
