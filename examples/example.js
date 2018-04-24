@@ -1,3 +1,7 @@
+/*
+ * Usage example file
+ */
+
 var WorldmapGenerator = require('../index'),
     Jimp = require('jimp'),
     co = require('co');
