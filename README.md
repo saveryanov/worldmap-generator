@@ -9,7 +9,7 @@ Procedural worldmap generator.
 ## Install
 
 ```commandline
-npm install --save avatars
+npm install --save worldmap-generator
 ```
 
 ## Usage
@@ -26,6 +26,8 @@ var world = new WorldmapGenerator(params);
 // generate map
 world.generate();
 ```
+
+After executing *world.generate()* you can find your map at *world.map*.
 
 **params** must contain size and tileTypes elements:
 
