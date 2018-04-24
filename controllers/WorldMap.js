@@ -122,11 +122,13 @@ WorldmapGenerator.prototype.getCellRaw = function (z, x, y) {
 WorldmapGenerator.prototype.getCell = function (z, x, y) {
     if (this.map[z] && this.map[z][x] && this.map[z][x][y]) {
         let cell = this.map[z][x][y];
-        if (cell.frequencies === null && !cell.resolved) {
-            cell.frequencies = {};
-            for (let tileTypeName in this.tileTypes) {
-                let tileType = this.tileTypes[tileTypeName];
-                cell.frequencies[tileTypeName] = tileType.frequency;
+        if (!cell.resolved) {
+            if (!cell.frequencies) {
+                cell.frequencies = {};
+                for (let tileTypeName in this.tileTypes) {
+                    let tileType = this.tileTypes[tileTypeName];
+                    cell.frequencies[tileTypeName] = tileType.frequency;
+                }
             }
         }
         return cell;
@@ -145,8 +147,12 @@ WorldmapGenerator.prototype.updateSurroundFrequencies = function (z, x, y) {
                     if (!cell.frequencies) {
                         cell.frequencies = {};
                     }
-                    if (cell.frequencies[connectionName] === undefined || frequency === 0) {
-                        cell.frequencies[connectionName] = frequency;
+                    if (cell.frequencies[connectionName] !== 0) {
+                        if (cell.frequencies[connectionName] === undefined || frequency === 0) {
+                            cell.frequencies[connectionName] = frequency;
+                        } else {
+                            cell.frequencies[connectionName] += frequency;
+                        }
                     }
                 }
             }
@@ -163,6 +169,12 @@ WorldmapGenerator.prototype.updateSurroundFrequencies = function (z, x, y) {
         updateFrequencies(0, 1, 0, tileType.connections.right);
         updateFrequencies(0, 0, -1, tileType.connections.up);
         updateFrequencies(0, 0, 1, tileType.connections.down);
+        /* to add this need to define diagonal connections
+        updateFrequencies(0, 1, -1, tileType.connections.up_left);
+        updateFrequencies(0, -1, -1, tileType.connections.up_right);
+        updateFrequencies(0, 1, 1, tileType.connections.down_left);
+        updateFrequencies(0, -1, 1, tileType.connections.down_right); 
+        */
     }
 }
 
@@ -190,12 +202,12 @@ WorldmapGenerator.prototype.generate = function () {
     }
 
     // recursively creates map
-    function processCell(z, x, y, callStackLeft = 10) {
+    function processCell({z, x, y, callStackLeft = 100} = {}) {
         if (self.unresolvedCount <= 0) {
             return;
         }
 
-        if (callStackLeft <= 0) {
+        if (callStackLeft < 0) {
             return;
         }
 
@@ -208,23 +220,26 @@ WorldmapGenerator.prototype.generate = function () {
         self.resolveMapCell(z, x, y, currentTileType.name);
         self.unresolvedCount--;
 
-        processCell(z + 1, x, y, callStackLeft - 1); // top
-        processCell(z - 1, x, y, callStackLeft - 1); // bottom
-        processCell(z, x - 1, y, callStackLeft - 1); // left
-        processCell(z, x + 1, y, callStackLeft - 1); // right
-        processCell(z, x, y - 1, callStackLeft - 1); // up
-        processCell(z, x, y + 1, callStackLeft - 1); // down
-        processCell(z, x - 1, y - 1, callStackLeft - 1); // up-left
-        processCell(z, x + 1, y - 1, callStackLeft - 1); // up-right
-        processCell(z, x - 1, y + 1, callStackLeft - 1); // down-left
-        processCell(z, x + 1, y + 1, callStackLeft - 1); // down-right
+        controllers.helper.shuffle([
+            {z: z + 1, x: x, y: y, callStackLeft: callStackLeft -1}, // top
+            {z: z - 1, x: x, y: y, callStackLeft: callStackLeft - 1}, // bottom
+            {z: z, x: x - 1, y: y, callStackLeft: callStackLeft - 1}, // left
+            {z: z, x: x + 1, y: y, callStackLeft: callStackLeft - 1}, // right
+            {z: z, x: x, y: y - 1, callStackLeft: callStackLeft - 1}, // up
+            {z: z, x: x, y: y + 1, callStackLeft: callStackLeft - 1}, // down
+            /* to add this need to define diagonal connections
+            {z: z, x: x - 1, y: y - 1, callStackLeft: callStackLeft - 1}, // up-left
+            {z: z, x: x + 1, y: y - 1, callStackLeft: callStackLeft - 1}, // up-right
+            {z: z, x: x - 1, y: y + 1, callStackLeft: callStackLeft - 1}, // down-left
+            {z: z, x: x + 1, y: y + 1, callStackLeft: callStackLeft - 1}, // down-right
+            */
+        ]).map(processCell);
+
     }
 
     while (self.unresolvedCount > 0) {
         let coords = getUnresolvedCoords();
-        let {x, y, z} = coords[Math.floor(Math.random() * coords.length)];
-        processCell(z, x, y);
-        break;
+        processCell(coords[Math.floor(Math.random() * coords.length)]);
     }
 }
 

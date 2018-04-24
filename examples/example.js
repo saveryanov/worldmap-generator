@@ -1,9 +1,9 @@
-var WorldmapGenerator = require('./index'),
+var WorldmapGenerator = require('../index'),
     Jimp = require('jimp'),
     co = require('co');
 
-const WIDTH = 100;
-const HEIGHT = 100;
+const WIDTH = 300;
+const HEIGHT = 300;
 
 var world = new WorldmapGenerator({
     size: {
@@ -14,42 +14,52 @@ var world = new WorldmapGenerator({
     tileTypes: [
         {
             name: 'grass',
-            frequency: 10,
+            frequency: 1,
             connections: {
-                up:     {'grass': 100, 'water': 1, 'forest': 1, 'mountain': 1},
-                down:   {'grass': 100, 'water': 1, 'forest': 1, 'mountain': 1},
-                left:   {'grass': 100, 'water': 1, 'forest': 1, 'mountain': 1},
-                right:  {'grass': 100, 'water': 1, 'forest': 1, 'mountain': 1}
+                up:     {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
+                down:   {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
+                left:   {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
+                right:  {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1}
             }
         },
         {
             name: 'forest',
-            frequency: 2,
+            frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0},
-                down:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0},
-                left:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0},
-                right:  {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0}
+                up:     {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
+                down:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
+                left:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
+                right:  {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0}
             }
         },
         {
             name: 'mountain',
-            frequency: 2,
+            frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100},
-                down:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100},
-                left:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100},
-                right:  {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100}
+                up:     {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
+                down:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
+                left:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
+                right:  {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0}
             }
         },
         {
             name: 'water',
             frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 500, 'forest': 0, 'mountain': 0},
-                down:   {'grass': 1, 'water': 500, 'forest': 0, 'mountain': 0},
-                left:   {'grass': 1, 'water': 500, 'forest': 0, 'mountain': 0},
-                right:  {'grass': 1, 'water': 500, 'forest': 0, 'mountain': 0}
+                up:     {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
+                down:   {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
+                left:   {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
+                right:  {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1}
+            }
+        },
+        {
+            name: 'sand',
+            frequency: 1,
+            connections: {
+                up:     {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
+                down:   {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
+                left:   {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
+                right:  {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10}
             }
         }
     ]
@@ -95,6 +105,7 @@ function createImageFromArray(pixels, imgWidth, imgHeight) {
                     case 'forest': pixelRGB = [10, 25, 10]; break;
                     case 'water': pixelRGB = [0, 0, 100]; break;
                     case 'mountain': pixelRGB = [100, 100, 100]; break;
+                    case 'sand': pixelRGB = [100, 100, 0]; break;
                     default: pixelRGB = [0, 0, 0]; break;
                 }
                 var pixelHEX = Jimp.rgbaToInt(pixelRGB[0], pixelRGB[1], pixelRGB[2], 255);
@@ -129,7 +140,7 @@ co(function* () {
     var image = yield createImageFromArray(world.map[0], WIDTH, HEIGHT);
     
     // write image if necessary
-    yield writeImage('worldmap3.png', image);
+    yield writeImage('result.png', image);
 
     return image;
 })
