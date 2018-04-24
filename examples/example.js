@@ -7,68 +7,68 @@ var WorldmapGenerator = require('../index'),
     co = require('co');
 
 const WIDTH = 300;
-const HEIGHT = 300;
+const DEPTH = 300;
+const HEIGHT = 1;
 
 var world = new WorldmapGenerator({
     size: {
         width: WIDTH,
-        depth: HEIGHT,
-        heigth: 1
+        depth: DEPTH,
+        heigth: HEIGHT
     },
     tileTypes: [
         {
             name: 'grass',
             frequency: 1,
             connections: {
-                up:     {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
-                down:   {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
-                left:   {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1},
-                right:  {'grass': 500, 'water': 0, 'forest': 1, 'mountain': 1, 'sand': 1}
+                up:     {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
+                down:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
+                left:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
+                right:  {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1}
             }
         },
         {
             name: 'forest',
             frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
-                down:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
-                left:   {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0},
-                right:  {'grass': 1, 'water': 0, 'forest': 200, 'mountain': 0, 'sand': 0}
+                up:     {'grass': 1, 'forest': 200},
+                down:   {'grass': 1, 'forest': 200},
+                left:   {'grass': 1, 'forest': 200},
+                right:  {'grass': 1, 'forest': 200}
             }
         },
         {
             name: 'mountain',
             frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
-                down:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
-                left:   {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0},
-                right:  {'grass': 1, 'water': 0, 'forest': 0, 'mountain': 100, 'sand': 0}
+                up:     {'grass': 1, 'mountain': 100},
+                down:   {'grass': 1, 'mountain': 100},
+                left:   {'grass': 1, 'mountain': 100},
+                right:  {'grass': 1, 'mountain': 100}
             }
         },
         {
             name: 'water',
             frequency: 1,
             connections: {
-                up:     {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
-                down:   {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
-                left:   {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1},
-                right:  {'grass': 0, 'water': 500, 'forest': 0, 'mountain': 0, 'sand': 1}
+                up:     {'water': 500, 'sand': 1},
+                down:   {'water': 500, 'sand': 1},
+                left:   {'water': 500, 'sand': 1},
+                right:  {'water': 500, 'sand': 1}
             }
         },
         {
             name: 'sand',
             frequency: 1,
             connections: {
-                up:     {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
-                down:   {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
-                left:   {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10},
-                right:  {'grass': 1, 'water': 1, 'forest': 0, 'mountain': 0, 'sand': 10}
+                up:     {'grass': 1, 'water': 1, 'sand': 50},
+                down:   {'grass': 1, 'water': 1, 'sand': 50},
+                left:   {'grass': 1, 'water': 1, 'sand': 50},
+                right:  {'grass': 1, 'water': 1, 'sand': 50}
             }
         }
     ]
 });
-
 
 world.generate();
 
@@ -141,7 +141,7 @@ function writeImage(fileName, image) {
 co(function* () {
 
     // create image
-    var image = yield createImageFromArray(world.map[0], WIDTH, HEIGHT);
+    var image = yield createImageFromArray(world.map[0], WIDTH, DEPTH);
     
     // write image if necessary
     yield writeImage('result.png', image);

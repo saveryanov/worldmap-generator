@@ -61,6 +61,7 @@ WorldmapGenerator.prototype.setSize = function ({
 }
 
 WorldmapGenerator.prototype.updateTileConnections = function () {
+    // create inverted connections
     for (let tileTypeName in this.tileTypes) {
         let tileType = this.tileTypes[tileTypeName];
         for (let sideName in tileType.connections) {
@@ -68,6 +69,17 @@ WorldmapGenerator.prototype.updateTileConnections = function () {
                 let frequency = tileType.connections[sideName][connectionName];
                 if (this.tileTypes[connectionName]) {
                     this.tileTypes[connectionName].connections[controllers.helper.invertSide(sideName)][tileTypeName] = frequency;
+                }
+            }
+        }
+    }
+    // create undefined connections
+    for (let tileTypeNameOuter in this.tileTypes) {
+        for (let tileTypeName in this.tileTypes) {
+            let tileType = this.tileTypes[tileTypeName];
+            for (let sideName in tileType.connections) {
+                if (tileType.connections[sideName][tileTypeNameOuter] === undefined) {
+                    tileType.connections[sideName][tileTypeNameOuter] = 0;
                 }
             }
         }
