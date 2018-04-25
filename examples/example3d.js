@@ -8,7 +8,7 @@ var WorldmapGenerator = require('../index'),
 
 const WIDTH = 100;
 const DEPTH = 100;
-const HEIGHT = 5;
+const HEIGHT = 7;
 
 // write it to file
 
@@ -23,32 +23,14 @@ co(function* () {
         },
         tileTypes: [
             {
-                name: 'air',
-                frequency: 1,
-                connections: {
-                    top:    {'air': 100000},
-                    bottom: {'air': 10000, 'grass': 10000, 'mountain': 10},
-                    up:     {'air': 10000, 'mountain': 1},
-                    down:   {'air': 10000, 'mountain': 1},
-                    left:   {'air': 10000, 'mountain': 1},
-                    right:  {'air': 10000, 'mountain': 1},
-                },
-                limits: {
-                    min: {
-                        z: 1
-                    }
-                }
-            },
-            {
                 name: 'grass',
                 frequency: 10,
                 connections: {
-                    top:    {'air': 1000000},
-                    bottom: {'grass': 1000000},
-                    up:     {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
-                    down:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
-                    left:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1},
-                    right:  {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1}
+                    top:    {'air': 250, 'grass': 250},
+                    up:     {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 2},
+                    down:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 2},
+                    left:   {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 2},
+                    right:  {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 2}
                 },
                 limits: {
                     max: {
@@ -57,15 +39,30 @@ co(function* () {
                 }
             },
             {
+                name: 'air',
+                frequency: 0,
+                connections: {
+                    top:    {'air': 1000},
+                    up:     {'air': 1000, 'mountain': 1, 'grass': 1},
+                    down:   {'air': 1000, 'mountain': 1, 'grass': 1},
+                    left:   {'air': 1000, 'mountain': 1, 'grass': 1},
+                    right:  {'air': 1000, 'mountain': 1, 'grass': 1},
+                },
+                limits: {
+                    min: {
+                        z: 3
+                    }
+                }
+            },
+            {
                 name: 'forest',
                 frequency: 10,
                 connections: {
-                    top:    {'air': 1000000},
-                    bottom: {'forest': 1000000},
-                    up:     {'grass': 1, 'forest': 200},
-                    down:   {'grass': 1, 'forest': 200},
-                    left:   {'grass': 1, 'forest': 200},
-                    right:  {'grass': 1, 'forest': 200}
+                    top:    {'air': 1000},
+                    up:     {'grass': 1, 'forest': 250},
+                    down:   {'grass': 1, 'forest': 250},
+                    left:   {'grass': 1, 'forest': 250},
+                    right:  {'grass': 1, 'forest': 250}
                 },
                 limits: {
                     max: {
@@ -77,8 +74,7 @@ co(function* () {
                 name: 'mountain',
                 frequency: 10,
                 connections: {
-                    top:    {'air': 1000000, 'mountain': 10000},
-                    bottom: {'mountain': 1000000},
+                    top:    {'air': 1000, 'mountain': 1000},
                     up:     {'grass': 1, 'mountain': 150},
                     down:   {'grass': 1, 'mountain': 150},
                     left:   {'grass': 1, 'mountain': 150},
@@ -94,12 +90,11 @@ co(function* () {
                 name: 'water',
                 frequency: 10,
                 connections: {
-                    top:    {'air': 1000000},
-                    bottom: {'water': 1000000},
-                    up:     {'water': 500, 'sand': 1, 'mountain': 1},
-                    down:   {'water': 500, 'sand': 1, 'mountain': 1},
-                    left:   {'water': 500, 'sand': 1, 'mountain': 1},
-                    right:  {'water': 500, 'sand': 1, 'mountain': 1}
+                    top:    {'air': 10000},
+                    up:     {'water': 500, 'sand': 1},
+                    down:   {'water': 500, 'sand': 1},
+                    left:   {'water': 500, 'sand': 1},
+                    right:  {'water': 500, 'sand': 1}
                 },
                 limits: {
                     max: {
@@ -111,8 +106,7 @@ co(function* () {
                 name: 'sand',
                 frequency: 10,
                 connections: {
-                    top:    {'air': 1000000},
-                    bottom: {'sand': 1000000},
+                    top:    {'air': 10000, 'sand': 100},
                     up:     {'grass': 1, 'water': 1, 'sand': 50},
                     down:   {'grass': 1, 'water': 1, 'sand': 50},
                     left:   {'grass': 1, 'water': 1, 'sand': 50},
@@ -135,7 +129,7 @@ co(function* () {
 
     // create image
     for (let z = 0; z < HEIGHT; z++) {
-        let filename = `result3d_level${z}.png`;
+        let filename = `result3d_lvl${z}.png`;
         console.time(`World saved to '${filename}'`);
         var image = yield createImageFromArray(world.map[z], WIDTH, DEPTH);
         yield writeImage(filename, image);

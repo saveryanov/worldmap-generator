@@ -4,7 +4,7 @@
 
 Procedural worldmap generator.
 
-![alt example](https://github.com/saveryanov/worldmap-generator/blob/master/examples/result2d.png?raw=true)
+![alt example](https://raw.githubusercontent.com/saveryanov/worldmap-generator/master/examples/result2d.png)
 
 ## Install
 

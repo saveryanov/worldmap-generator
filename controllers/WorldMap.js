@@ -232,7 +232,7 @@ WorldmapGenerator.prototype.generate = function () {
 
 
     // recursively creates map
-    function clearCells({z, x, y, callStackLeft = 5} = {}) {
+    function clearCells({z, x, y, callStackLeft = 25} = {}) {
         if (callStackLeft < 0) {
             return;
         }
@@ -278,8 +278,8 @@ WorldmapGenerator.prototype.generate = function () {
         self.resolveMapCell(z, x, y, currentTileType.name);
         
         controllers.helper.shuffle([
-            {z: z + 1, x: x, y: y, callStackLeft: callStackLeft -1}, // top
-            {z: z - 1, x: x, y: y, callStackLeft: callStackLeft - 1}, // bottom
+            //{z: z + 1, x: x, y: y, callStackLeft: callStackLeft -1}, // top
+            //{z: z - 1, x: x, y: y, callStackLeft: callStackLeft - 1}, // bottom
             {z: z, x: x - 1, y: y, callStackLeft: callStackLeft - 1}, // left
             {z: z, x: x + 1, y: y, callStackLeft: callStackLeft - 1}, // right
             {z: z, x: x, y: y - 1, callStackLeft: callStackLeft - 1}, // up
@@ -291,9 +291,9 @@ WorldmapGenerator.prototype.generate = function () {
     for (let z = 0; z < self.size.height; z++) {
         let coords = getUnresolvedCoords(z);
         while (coords.length) {
-            coords = getUnresolvedCoords(z);
-            //console.log(`${self.unresolvedCount} tiles left.`);
+            console.log(`Processing ${z} level: ${coords.length} level tiles left (${self.unresolvedCount} tiles total left).`);
             processCell(coords[Math.floor(Math.random() * coords.length)]);
+            coords = getUnresolvedCoords(z);
         }
     }
 }
