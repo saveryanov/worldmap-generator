@@ -1,6 +1,6 @@
 {
   "name": "worldmap-generator",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "worldmap generator (pre pre pre alpha)",
   "main": "index.js",
   "scripts": {
