@@ -1,7 +1,7 @@
 {
   "name": "worldmap-generator",
   "version": "0.9.1",
-  "description": "worldmap generator (pre pre pre alpha)",
+  "description": "Procedural 2D worldmap generator. It can generate maps defined at material structure that allow you to create different biomes.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,7 +15,9 @@
     "map",
     "game",
     "generator",
-    "random"
+    "random",
+    "procedure",
+    "procedural"
   ],
   "author": "Sergey Averyanov",
   "license": "MIT",
