@@ -5,15 +5,19 @@
 Procedural 2D worldmap generator. It can generate maps defined at material structure that allow you to create different biomes.
 
 *Generated map with grass, forest, water, sand and mountains*
+
 ![alt example](https://raw.githubusercontent.com/saveryanov/worldmap-generator/master/examples/result.png)
 
 *Increased amount of water (ocean biome)*
+
 ![alt ocean](https://raw.githubusercontent.com/saveryanov/worldmap-generator/master/examples/biomes/ocean.png)
 
 *Increased amount of forests (forest biome)*
+
 ![alt forest](https://raw.githubusercontent.com/saveryanov/worldmap-generator/master/examples/biomes/forest.png)
 
 *Increased amount of sand and with cactis (desert biome)*
+
 ![alt desert](https://raw.githubusercontent.com/saveryanov/worldmap-generator/master/examples/biomes/desert.png)
 
 ## Install
