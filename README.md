@@ -38,10 +38,10 @@ var WorldmapGenerator = require('worldmap-generator');
 // create world with some params
 var world = new WorldmapGenerator({
     size: {
-        width: 300, // map width
-        heigth: 300 // map height
+        width: 300,   // map width
+        height: 300  // map height
     },
-    tileTypes: [    // map tiles and connections
+    tileTypes: [
         {
             name: 'grass',  // tile name
             connections: {'grass': 500, 'forest': 1, 'mountain': 1, 'sand': 1}  // connections to surrounding tiles with its frequencies
@@ -49,8 +49,7 @@ var world = new WorldmapGenerator({
         },
         {
             name: 'forest',
-            frequency: 1,
-            connections: {'grass': 1, 'forest': 200}
+            connections: {'grass': 1, 'forest': 300}
         },
         {
             name: 'mountain',
@@ -58,12 +57,10 @@ var world = new WorldmapGenerator({
         },
         {
             name: 'water',
-            frequency: 1,
             connections: {'water': 500, 'sand': 1}
         },
         {
             name: 'sand',
-            frequency: 1,
             connections: {'grass': 1, 'water': 1, 'sand': 50}
         }
     ]

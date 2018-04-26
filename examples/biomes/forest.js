@@ -6,8 +6,8 @@ var WorldmapGenerator = require('../../index'),
     helper = require('../examples_helper'),
     co = require('co');
 
-const WIDTH = 500;
-const HEIGHT = 500;
+const WIDTH = 300;
+const HEIGHT = 300;
 
 var filename = __dirname + '/forest.png';
 

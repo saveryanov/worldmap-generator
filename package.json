@@ -1,6 +1,6 @@
 {
   "name": "worldmap-generator",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Procedural 2D worldmap generator. It can generate maps defined at material structure that allow you to create different biomes.",
   "main": "index.js",
   "scripts": {
